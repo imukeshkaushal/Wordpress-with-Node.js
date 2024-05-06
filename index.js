@@ -1,8 +1,7 @@
 const express = require("express");
-const fs = require("fs");
 const axios = require("axios");
 const dotenv = require("dotenv");
-dotenv.config(); // Load variables from .env file
+dotenv.config();
 const app = express();
 app.use(express.json());
 
@@ -37,15 +36,10 @@ app.post("/register", async (req, res) => {
         },
       }
     );
-    res
-      .status(200)
-      .json({ message: "User registered successfully", data: response.data });
+    res.send({ message: "User registered successfully", data: response.data });
   } catch (error) {
     console.error("Error registering user:", error.response.data);
-    res.status(400).json({
-      message: "User registration failed",
-      error: error.response.data,
-    });
+    res.send({message : "User Registration Failed", error : error.response.data});
   }
 });
 
@@ -60,14 +54,16 @@ app.post("/login", async (req, res) => {
     });
 
     const authToken = authResponse.data.token;
-    res.status(200).json({ token: authToken });
+    const userdata = authResponse.data;
+    res.send({data : userdata});
+    
   } catch (error) {
     console.error("Error logging in:", error.response.data);
-    res
-      .status(401)
-      .json({ message: "Login failed", error: error.response.data });
+    res.send({message: "Login failed", error: error.response.data});
   }
 });
+
+
 
 app.listen(4500, () => {
   console.log("Server is Running on Port 4500");
